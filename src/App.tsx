@@ -80,7 +80,7 @@ const getUniqueExercisesForLevel = (levelId: number): Exercise[] => {
     
     distractors = [
       `${capitalizedNoun} war gestern ${targetAdj.de}`,
-      `Ein ${targetNoun.split ? targetNoun.split(' ')[1] : 'Gegenstand'} ist nicht ${targetAdj.de}`,
+      `${targetNoun.de ? targetNoun.de.split(' ')[1] : 'Gegenstand'} ist nicht ${targetAdj.de}`,
       `${capitalizedNoun} ist total alt`
     ];
   } else {

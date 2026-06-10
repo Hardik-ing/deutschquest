@@ -9,10 +9,11 @@ interface LessonEngineProps {
   questId: number;
   mode: 'normal' | 'replay' | 'challenge' | 'review';
   exercises: Exercise[];
+  soundEnabled: boolean;
   onClose: (xpEarned: number, coinsEarned: number) => void;
 }
 
-export const LessonEngine: React.FC<LessonEngineProps> = ({ questId, mode, exercises, onClose }) => {
+export const LessonEngine: React.FC<LessonEngineProps> = ({ questId, mode, exercises, soundEnabled, onClose }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [showSummary, setShowSummary] = useState(false);
@@ -78,7 +79,7 @@ export const LessonEngine: React.FC<LessonEngineProps> = ({ questId, mode, exerc
                   Arena Context: Mode ({mode})
                 </span>
               </div>
-              <ExerciseCard exercise={currentExercise} onNext={handleNextExercise} />
+              <ExerciseCard exercise={currentExercise} soundEnabled={soundEnabled} onNext={handleNextExercise} />
             </motion.div>
           ) : (
             <motion.div
