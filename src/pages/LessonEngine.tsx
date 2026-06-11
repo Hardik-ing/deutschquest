@@ -41,18 +41,40 @@ export const LessonEngine: React.FC<LessonEngineProps> = ({ questId, mode, exerc
 
   // Question Speech Reader hook
   useEffect(() => {
-    if (showSummary || !soundEnabled || !currentExercise || !('speechSynthesis' in window)) return;
-    const textToSpeak = currentExercise.german_audio_text || currentExercise.question_text;
+    if (showSummary || !soundEnabled || !currentExercise?.question_text || !('speechSynthesis' in window)) return;
+
     try {
+      // 1. Cancel any active speech queues
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(textToSpeak);
-      utterance.lang = currentExercise.german_audio_text ? 'de-DE' : 'en-US';
-      utterance.rate = 0.85;
+
+      // 2. Clean the metadata tags out of the question text
+      const cleanPromptText = currentExercise.question_text
+        .replace(/\[.*?\]/g, '')
+        .replace(/—/g, '')
+        .replace('Translate:', '')
+        .trim();
+
+      const utterance = new SpeechSynthesisUtterance(cleanPromptText);
+
+      // 3. Evaluate the language of the prompt text dynamically
+      const lowerText = currentExercise.question_text.toLowerCase();
+      if (
+        lowerText.includes('translate') ||
+        lowerText.includes('book the') ||
+        lowerText.includes('i eat') ||
+        lowerText.includes('the mother')
+      ) {
+        utterance.lang = 'en-US';
+      } else {
+        utterance.lang = 'de-DE';
+      }
+
+      utterance.rate = 0.9;
       window.speechSynthesis.speak(utterance);
-    } catch (err) {
-      console.warn(err);
+    } catch (error) {
+      console.warn(error);
     }
-  }, [currentIndex, showSummary, soundEnabled, activeExercises]);
+  }, [currentExercise, showSummary, soundEnabled]);
 
   const handleNextExercise = (isCorrect: boolean, skipAndReplace?: boolean) => {
     if (isCorrect) {
