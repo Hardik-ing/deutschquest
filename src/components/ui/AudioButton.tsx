@@ -1,46 +1,33 @@
 import React, { useState } from 'react';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Volume2 } from 'lucide-react';
 
 interface AudioButtonProps {
   text: string;
-  langCode?: string;
+  lang?: 'de-DE' | 'en-US';
+  langCode?: 'de-DE' | 'en-US';
   audioUrl?: string | null;
 }
 
-export const AudioButton: React.FC<AudioButtonProps> = ({ text, langCode = 'de-DE', audioUrl }) => {
-  const [speaking, setSpeaking] = useState(false);
+export const AudioButton: React.FC<AudioButtonProps> = ({ text, langCode, lang, audioUrl }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const resolvedLangCode = lang ?? langCode ?? 'de-DE';
 
   const playNativeAudio = () => {
     if (!audioUrl) return false;
 
     const audio = new Audio(audioUrl);
-    audio.onplay = () => setSpeaking(true);
-    audio.onended = () => setSpeaking(false);
-    audio.onerror = () => setSpeaking(false);
+    audio.onplay = () => setIsPlaying(true);
+    audio.onended = () => setIsPlaying(false);
+    audio.onerror = () => setIsPlaying(false);
     audio.play().catch(error => {
-      setSpeaking(false);
+      setIsPlaying(false);
       console.log('Native audio playback blocked:', error);
     });
     return true;
   };
 
-  const playSmsFlow = (messageText: string) => {
-    const utterance = new SpeechSynthesisUtterance(messageText);
-    utterance.lang = 'en-IN';
-    utterance.rate = 1.0;
-
-    utterance.onstart = () => setSpeaking(true);
-    utterance.onend = () => {
-      setSpeaking(false);
-      const successAudio = new Audio('/audio/success.mp3');
-      successAudio.play().catch(error => console.log('Audio play blocked:', error));
-    };
-    utterance.onerror = () => setSpeaking(false);
-
-    window.speechSynthesis.speak(utterance);
-  };
-
-  const speak = () => {
+  const handleSpeak = () => {
+    if (!text) return;
     if (playNativeAudio()) return;
 
     if (!('speechSynthesis' in window)) {
@@ -50,31 +37,29 @@ export const AudioButton: React.FC<AudioButtonProps> = ({ text, langCode = 'de-D
 
     window.speechSynthesis.cancel();
 
-    if (langCode === 'en-IN') {
-      playSmsFlow(text);
-      return;
-    }
+    const cleanPromptText = text.replace(/\[.*?\]/g, '').replace('Translate:', '').trim();
+    const utterance = new SpeechSynthesisUtterance(cleanPromptText);
+    utterance.lang = resolvedLangCode;
+    utterance.rate = resolvedLangCode === 'de-DE' ? 0.85 : 1;
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = langCode;
-    utterance.rate = 0.85; // slightly slower for optimal phonetic training
-
-    utterance.onstart = () => setSpeaking(true);
-    utterance.onend = () => setSpeaking(false);
-    utterance.onerror = () => setSpeaking(false);
+    utterance.onstart = () => setIsPlaying(true);
+    utterance.onend = () => setIsPlaying(false);
+    utterance.onerror = () => setIsPlaying(false);
 
     window.speechSynthesis.speak(utterance);
   };
 
   return (
     <button
-      onClick={speak}
+      onClick={handleSpeak}
       className={`p-3 rounded-full transition-all active:scale-90 ${
-        speaking ? 'bg-emerald-500 text-white animate-pulse' : 'bg-blue-600 text-white hover:bg-blue-500'
+        isPlaying
+          ? 'bg-indigo-600 text-white animate-pulse'
+          : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-md'
       }`}
-      title={audioUrl ? 'Play native German recording' : `Pronounce in target dialect (${langCode})`}
+      title={audioUrl ? 'Play native German recording' : 'Listen to question prompt'}
     >
-      {speaking ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+      <Volume2 className="w-5 h-5" />
     </button>
   );
 };

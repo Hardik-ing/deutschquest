@@ -28,9 +28,28 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
 
   return (
     <div className="w-full max-w-xl mx-auto bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-3xl p-6 border border-white/20 shadow-2xl space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-black text-slate-800 dark:text-slate-100">{exercise.question_text}</h2>
-        {exercise.german_audio_text && <AudioButton text={exercise.german_audio_text} />}
+      <div className="flex justify-between items-center gap-4">
+        <div>
+          <span className="text-xs uppercase font-extrabold tracking-widest text-indigo-500">
+            {exercise.type} challenge
+          </span>
+          <h2 className="text-xl font-extrabold text-slate-800 dark:text-slate-100 mt-1">
+            {exercise.question_text}
+          </h2>
+        </div>
+
+        {/* Fixed audio trigger: passes the exact question text to be spoken. */}
+        {exercise.question_text && (
+          <AudioButton
+            text={exercise.question_text}
+            lang={
+              exercise.question_text.toLowerCase().includes('translate:') ||
+              exercise.question_text.toLowerCase().includes('book the')
+                ? 'en-US'
+                : 'de-DE'
+            }
+          />
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-3">

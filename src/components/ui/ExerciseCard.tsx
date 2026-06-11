@@ -129,7 +129,18 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
             {exercise.question_text}
           </h2>
         </div>
-        {exercise.german_audio_text && <AudioButton text={exercise.german_audio_text} audioUrl={nativeAudioUrl} />}
+        {exercise.question_text && (
+          <AudioButton
+            text={exercise.question_text}
+            lang={
+              exercise.question_text.toLowerCase().includes('translate:') ||
+              exercise.question_text.toLowerCase().includes('book the')
+                ? 'en-US'
+                : 'de-DE'
+            }
+            audioUrl={nativeAudioUrl}
+          />
+        )}
       </div>
 
       {/* Input Options Grid */}
