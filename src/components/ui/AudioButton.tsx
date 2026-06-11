@@ -3,14 +3,14 @@ import { Volume2 } from 'lucide-react';
 
 interface AudioButtonProps {
   text: string;
-  lang?: 'de-DE' | 'en-US';
+  lang: 'de-DE' | 'en-US';
   langCode?: 'de-DE' | 'en-US';
   audioUrl?: string | null;
 }
 
 export const AudioButton: React.FC<AudioButtonProps> = ({ text, langCode, lang, audioUrl }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const resolvedLangCode = lang ?? langCode ?? 'de-DE';
+  const resolvedLangCode = lang ?? langCode;
 
   const playNativeAudio = () => {
     if (!audioUrl) return false;
@@ -26,7 +26,8 @@ export const AudioButton: React.FC<AudioButtonProps> = ({ text, langCode, lang, 
     return true;
   };
 
-  const handleSpeak = () => {
+  const handleSpeak = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!text) return;
     if (playNativeAudio()) return;
 
@@ -37,10 +38,30 @@ export const AudioButton: React.FC<AudioButtonProps> = ({ text, langCode, lang, 
 
     window.speechSynthesis.cancel();
 
-    const cleanPromptText = text.replace(/\[.*?\]/g, '').replace('Translate:', '').trim();
+    const cleanPromptText = text
+      .replace(/\[.*?\]/g, '')
+      .replace(/—/g, '')
+      .replace('Translate:', '')
+      .trim();
     const utterance = new SpeechSynthesisUtterance(cleanPromptText);
     utterance.lang = resolvedLangCode;
-    utterance.rate = resolvedLangCode === 'de-DE' ? 0.85 : 1;
+    utterance.rate = resolvedLangCode === 'en-US' ? 0.75 : 0.85;
+    utterance.pitch = 1.0;
+
+    const voices = window.speechSynthesis.getVoices();
+    if (resolvedLangCode === 'en-US') {
+      const premiumEnglishVoice = voices.find(v =>
+        v.lang.startsWith('en-US') && (v.name.includes('Google') || v.name.includes('Natural'))
+      ) || voices.find(v => v.lang.startsWith('en-US'));
+
+      if (premiumEnglishVoice) utterance.voice = premiumEnglishVoice;
+    } else {
+      const premiumGermanVoice = voices.find(v =>
+        v.lang.startsWith('de-DE') && (v.name.includes('Google') || v.name.includes('Natural'))
+      ) || voices.find(v => v.lang.startsWith('de-DE'));
+
+      if (premiumGermanVoice) utterance.voice = premiumGermanVoice;
+    }
 
     utterance.onstart = () => setIsPlaying(true);
     utterance.onend = () => setIsPlaying(false);
@@ -51,11 +72,12 @@ export const AudioButton: React.FC<AudioButtonProps> = ({ text, langCode, lang, 
 
   return (
     <button
+      type="button"
       onClick={handleSpeak}
-      className={`p-3 rounded-full transition-all active:scale-90 ${
+      className={`p-3 rounded-full transition-all ${
         isPlaying
-          ? 'bg-indigo-600 text-white animate-pulse'
-          : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-md'
+          ? 'bg-indigo-600 text-white scale-95 shadow-inner'
+          : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-md hover:scale-105'
       }`}
       title={audioUrl ? 'Play native German recording' : 'Listen to question prompt'}
     >

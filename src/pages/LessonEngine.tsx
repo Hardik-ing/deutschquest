@@ -56,20 +56,24 @@ export const LessonEngine: React.FC<LessonEngineProps> = ({ questId, mode, exerc
 
       const utterance = new SpeechSynthesisUtterance(cleanPromptText);
 
-      // 3. Evaluate the language of the prompt text dynamically
       const lowerText = currentExercise.question_text.toLowerCase();
-      if (
+      const isEnglish =
         lowerText.includes('translate') ||
         lowerText.includes('book the') ||
         lowerText.includes('i eat') ||
-        lowerText.includes('the mother')
-      ) {
-        utterance.lang = 'en-US';
-      } else {
-        utterance.lang = 'de-DE';
-      }
+        lowerText.includes('the mother');
 
-      utterance.rate = 0.9;
+      const targetLang = isEnglish ? 'en-US' : 'de-DE';
+      utterance.lang = targetLang;
+      utterance.rate = isEnglish ? 0.75 : 0.85;
+
+      const voices = window.speechSynthesis.getVoices();
+      const premiumVoice = voices.find(v =>
+        v.lang.startsWith(targetLang) && (v.name.includes('Google') || v.name.includes('Natural'))
+      ) || voices.find(v => v.lang.startsWith(targetLang));
+
+      if (premiumVoice) utterance.voice = premiumVoice;
+
       window.speechSynthesis.speak(utterance);
     } catch (error) {
       console.warn(error);
