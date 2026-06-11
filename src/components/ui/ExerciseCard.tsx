@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, XCircle, ArrowRight, Star } from 'lucide-react';
 import { Exercise } from '../../types/database.types';
 import { AudioButton } from './AudioButton';
 import { SpeechRecognitionComponent } from './SpeechRecognitionComponent';
+import { supabase } from '../../config/supabaseClient';
 
 interface ExerciseCardProps {
   exercise: Exercise;
@@ -16,6 +17,40 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
   const [hasChecked, setHasChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [speakingScore, setSpeakingScore] = useState<number | null>(null);
+  const [nativeAudioUrl, setNativeAudioUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const exerciseId = String(exercise.id);
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(exerciseId);
+
+    setNativeAudioUrl(null);
+
+    if (!isUuid) return;
+
+    const loadNativeAudio = async () => {
+      const { data: audioTrack, error } = await supabase
+        .from('audio_assets')
+        .select('audio_url')
+        .eq('exercise_id', exerciseId)
+        .maybeSingle();
+
+      if (!isMounted) return;
+
+      if (error) {
+        console.warn('Native audio lookup failed:', error.message);
+        return;
+      }
+
+      setNativeAudioUrl(audioTrack?.audio_url ?? null);
+    };
+
+    loadNativeAudio();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [exercise.id]);
 
   // Helper helper to dynamically translate the core German answer back to English for post-attempt review
   const getEnglishTranslationFallback = (germanText: string): string => {
@@ -94,7 +129,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
             {exercise.question_text}
           </h2>
         </div>
-        {exercise.german_audio_text && <AudioButton text={exercise.german_audio_text} />}
+        {exercise.german_audio_text && <AudioButton text={exercise.german_audio_text} audioUrl={nativeAudioUrl} />}
       </div>
 
       {/* Input Options Grid */}

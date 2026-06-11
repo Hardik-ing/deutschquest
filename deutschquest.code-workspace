@@ -1,0 +1,20 @@
+{
+  "folders": [
+    {
+      "name": "🌐 FRONTEND - USER INTERFACE",
+      "path": "deutschquest-frontend"
+    },
+    {
+      "name": "⚙️ BACKEND - CORE SERVICES",
+      "path": "deutschquest-backend"
+    }
+  ],
+  "settings": {
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "files.exclude": {
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/node_modules": false
+    }
+  }
+}

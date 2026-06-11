@@ -40,7 +40,7 @@ export interface Lesson {
 }
 
 export interface Exercise {
-  id: number;
+  id: number | string;
   lesson_id: number;
   type: ExerciseType;
   question_text: string;

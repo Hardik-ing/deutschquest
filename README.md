@@ -45,6 +45,27 @@ VITE_SUPABASE_ANON_KEY=public-anon-key
 
 Use the Supabase schema in `supabase/schema.sql` to create the correct tables.
 
+For importing large external datasets, first run `supabase/incoming_dataset_schema.sql`
+in the Supabase SQL Editor, then install the ingestion dependency:
+
+```bash
+pip install -r requirements-ingestion.txt
+```
+
+Set backend-only credentials before running ingestion scripts:
+
+```env
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=service-role-key
+```
+
+Run imports:
+
+```bash
+python scripts/ingest_datasets.py tatoeba path/to/tatoeba.tsv
+python scripts/ingest_datasets.py wiktionary path/to/wiktionary.json
+```
+
 ## Notes
 
 - This app is scaffolded to run as a complete gamified learning experience.

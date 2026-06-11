@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Fully guarded strings ensure the browser will never throw an "undefined" reference error
 const supabaseUrl = typeof window !== 'undefined' && import.meta.env?.VITE_SUPABASE_URL 
   ? import.meta.env.VITE_SUPABASE_URL 
   : 'https://placeholder-your-project.supabase.co';
