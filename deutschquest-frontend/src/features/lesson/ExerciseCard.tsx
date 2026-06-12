@@ -1,6 +1,7 @@
-// BUILD_VERSION: 1.0.2-FORCE_REFRESH
+// BUILD_VERSION: 1.0.5-STRICT_ANTI_CHEAT
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+// 🟢 Ensure RefreshCw is listed here alongside your other icons
 import { CheckCircle2, XCircle, Mic, RefreshCw } from 'lucide-react';
 import { Exercise } from '../../../../deutschquest-backend/types/database.types';
 import { playFeedbackSound } from '../../../../deutschquest-backend/services/soundService';
@@ -18,26 +19,25 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
   const [isCorrect, setIsCorrect] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
 
-  // 🟢 CRITICAL TRACKING FIX 1: Reset question-state strings every single time the main ID updates
+  // 1. Clear out user states instantly whenever the question ID shifts
   useEffect(() => {
     setHasChecked(false);
     setIsCorrect(false);
     setSelectedOption(null);
     setIsRecording(false);
-  }, [exercise?.id]); // 🌟 Binds strictly to the question ID tracker to wipe out past states
+  }, [exercise?.id]);
 
-  // 🟢 CRITICAL TRACKING FIX 2: Compute a true random layout instantly before rendering using useMemo
+  // 2. Compute a true random distribution layout instantly before rendering via useMemo
   const shuffledOptions = useMemo(() => {
     if (!exercise || !exercise.options || exercise.options.length === 0) return [];
     
     const optionsCopy = [...exercise.options];
-    // Fisher-Yates shuffle algorithm execution
     for (let i = optionsCopy.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [optionsCopy[i], optionsCopy[j]] = [optionsCopy[j], optionsCopy[i]];
     }
     return optionsCopy;
-  }, [exercise?.id, exercise?.options]); // Only recalculates when a brand new question loads
+  }, [exercise?.id, exercise?.options]);
 
   const handleCheck = () => {
     if (exercise.type === 'speaking') {
@@ -56,16 +56,11 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
     playFeedbackSound(correct, soundEnabled);
   };
 
+  // 🟢 Handles resetting the card states so they can guess again on the SAME card
   const handleRetry = () => {
     setHasChecked(false);
     setSelectedOption(null);
     setIsCorrect(false);
-  };
-
-  const determineLanguage = (text: string): 'en-US' | 'de-DE' => {
-    const lowerText = text.toLowerCase();
-    if (lowerText.includes('translate') || lowerText.includes('fill-in')) return 'en-US';
-    return 'de-DE';
   };
 
   return (
@@ -82,11 +77,11 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
           </h2>
         </div>
         {exercise.question_text && (
-          <AudioButton text={exercise.question_text} lang={determineLanguage(exercise.question_text)} />
+          <AudioButton text={exercise.question_text} />
         )}
       </div>
 
-      {/* Main Content Interface Area */}
+      {/* Main Content Dynamic Switcher */}
       {exercise.type === 'speaking' ? (
         <div className="flex flex-col items-center justify-center p-6 bg-slate-800/40 rounded-2xl border border-slate-700/50 space-y-4">
           <p className="text-sm font-semibold text-slate-400">GERMAN SPEAKING PRACTICE</p>
@@ -106,8 +101,9 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
             const isSelected = selectedOption === option;
             return (
               <button
-                key={`${exercise.id}-option-${idx}`} // Unique key matching prevents DOM tree caching bugs
+                key={`${exercise.id}-option-${idx}`}
                 disabled={hasChecked}
+                type="button"
                 onClick={() => setSelectedOption(option)}
                 className={`w-full text-left p-4 rounded-xl border-2 font-bold transition-all text-sm flex justify-between items-center ${
                   isSelected
@@ -123,28 +119,37 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
         </div>
       )}
 
-      {/* State Validation Banner */}
+      {/* Answer Validation Notification Banner */}
       <AnimatePresence>
         {hasChecked && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`p-4 rounded-2xl border text-sm ${
+            exit={{ opacity: 0, y: 10 }}
+            className={`p-4 rounded-2xl border text-sm flex gap-3 items-start ${
               isCorrect ? 'bg-emerald-950/30 border-emerald-500/50 text-emerald-400' : 'bg-rose-950/30 border-rose-500/50 text-rose-400'
             }`}
           >
-            <h4 className="font-extrabold">{isCorrect ? '🎉 Correct!' : '⚠️ Nice Try!'}</h4>
-            <p className="text-xs mt-0.5">
-              {isCorrect ? 'Great job! You ready to move forward.' : 'That choice is incorrect. Try finding the right answer to proceed.'}
-            </p>
+            <div className="mt-0.5">
+              {isCorrect ? <CheckCircle2 className="w-5 h-5 text-emerald-400" /> : <XCircle className="w-5 h-5 text-rose-400" />}
+            </div>
+            <div>
+              <h4 className="font-extrabold text-base">{isCorrect ? '🎉 Correct!' : '⚠️ Incorrect Choice!'}</h4>
+              <p className="text-xs mt-1 font-medium text-slate-300">
+                {isCorrect 
+                  ? 'Fantastic work! Tap below to advance.' 
+                  : 'That configuration does not match the question requirements. Please click retry to pick another answer.'
+                }
+              </p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/*  ANTI-CHEAT MASTER FOOTER CONTROLLER */}
+      {/* 🛑 CRITICAL CONDITIONAL BUTTON RENDERING SECTION */}
       <div className="w-full pt-2">
         {!hasChecked ? (
-          // State 1: User hasn't clicked verify yet
+          // State A: User hasn't clicked verification yet
           <button
             type="button"
             disabled={!selectedOption && exercise.type !== 'speaking'}
@@ -154,7 +159,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
             Verify Selection
           </button>
         ) : isCorrect ? (
-          // State 2: Answer is verified and CORRECT -> User can go to next level
+          // State B: Answer verified and CORRECT -> Keep Advance Challenge button
           <button
             type="button"
             onClick={() => onNext(isCorrect)}
@@ -163,13 +168,13 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
             Advance Challenge ➔
           </button>
         ) : (
-          // State 3: Answer is verified and WRONG -> Strictly show RETRY option only
+          // State C: Answer verified and WRONG -> Completely swap to Retry Challenge button!
           <button
             type="button"
             onClick={handleRetry}
             className="w-full bg-amber-600 hover:bg-amber-500 py-4 text-white font-black rounded-xl shadow-lg transition-all text-sm uppercase tracking-wider flex items-center justify-center gap-2"
           >
-            <RefreshCw className="w-4 h-4 animate-spin-slow" />
+            <RefreshCw className="w-4 h-4 text-white animate-spin-slow" />
             Retry Challenge
           </button>
         )}
