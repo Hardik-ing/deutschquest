@@ -1,3 +1,4 @@
+// BUILD_VERSION: 1.0.2-FORCE_REFRESH
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, XCircle, Mic, RefreshCw } from 'lucide-react';
