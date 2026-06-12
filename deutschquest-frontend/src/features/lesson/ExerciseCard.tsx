@@ -141,31 +141,39 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
         )}
       </AnimatePresence>
 
-      {/* 🔴 FLOW FORCE CONTROL HOOKS */}
-      {!hasChecked ? (
-        <button
-          disabled={!selectedOption && exercise.type !== 'speaking'}
-          onClick={handleCheck}
-          className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 py-3.5 text-white font-black rounded-xl shadow-lg transition-all"
-        >
-          Verify Selection
-        </button>
-      ) : isCorrect ? (
-        <button
-          onClick={() => onNext(isCorrect)}
-          className="w-full bg-emerald-600 hover:bg-emerald-500 py-3.5 text-white font-black rounded-xl shadow-lg transition-all"
-        >
-          Advance Challenge ➔
-        </button>
-      ) : (
-        <button
-          onClick={handleRetry}
-          className="w-full bg-amber-600 hover:bg-amber-500 py-3.5 text-white font-black rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
-        >
-          <RefreshCw className="w-4 h-4 text-white" />
-          Retry Challenge
-        </button>
-      )}
+      {/*  ANTI-CHEAT MASTER FOOTER CONTROLLER */}
+      <div className="w-full pt-2">
+        {!hasChecked ? (
+          // State 1: User hasn't clicked verify yet
+          <button
+            type="button"
+            disabled={!selectedOption && exercise.type !== 'speaking'}
+            onClick={handleCheck}
+            className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 py-4 text-white font-black rounded-xl shadow-lg transition-all text-sm uppercase tracking-wider"
+          >
+            Verify Selection
+          </button>
+        ) : isCorrect ? (
+          // State 2: Answer is verified and CORRECT -> User can go to next level
+          <button
+            type="button"
+            onClick={() => onNext(isCorrect)}
+            className="w-full bg-emerald-600 hover:bg-emerald-500 py-4 text-white font-black rounded-xl shadow-lg transition-all text-sm uppercase tracking-wider flex items-center justify-center gap-2"
+          >
+            Advance Challenge ➔
+          </button>
+        ) : (
+          // State 3: Answer is verified and WRONG -> Strictly show RETRY option only
+          <button
+            type="button"
+            onClick={handleRetry}
+            className="w-full bg-amber-600 hover:bg-amber-500 py-4 text-white font-black rounded-xl shadow-lg transition-all text-sm uppercase tracking-wider flex items-center justify-center gap-2"
+          >
+            <RefreshCw className="w-4 h-4 animate-spin-slow" />
+            Retry Challenge
+          </button>
+        )}
+      </div>
 
     </div>
   );
