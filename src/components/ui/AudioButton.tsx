@@ -42,6 +42,7 @@ export const AudioButton: React.FC<AudioButtonProps> = ({ text, langCode, lang, 
       .replace(/\[.*?\]/g, '')
       .replace(/—/g, '')
       .replace('Translate:', '')
+      .replace(/_{2,}/g, '...')
       .trim();
     const utterance = new SpeechSynthesisUtterance(cleanPromptText);
     utterance.lang = resolvedLangCode;
@@ -49,19 +50,12 @@ export const AudioButton: React.FC<AudioButtonProps> = ({ text, langCode, lang, 
     utterance.pitch = 1.0;
 
     const voices = window.speechSynthesis.getVoices();
-    if (resolvedLangCode === 'en-US') {
-      const premiumEnglishVoice = voices.find(v =>
-        v.lang.startsWith('en-US') && (v.name.includes('Google') || v.name.includes('Natural'))
-      ) || voices.find(v => v.lang.startsWith('en-US'));
+    const targetLang = resolvedLangCode === 'en-US' ? 'en-US' : 'de-DE';
+    const premiumVoice = voices.find(v =>
+      v.lang.startsWith(targetLang) && (v.name.includes('Google') || v.name.includes('Natural'))
+    ) || voices.find(v => v.lang.startsWith(targetLang));
 
-      if (premiumEnglishVoice) utterance.voice = premiumEnglishVoice;
-    } else {
-      const premiumGermanVoice = voices.find(v =>
-        v.lang.startsWith('de-DE') && (v.name.includes('Google') || v.name.includes('Natural'))
-      ) || voices.find(v => v.lang.startsWith('de-DE'));
-
-      if (premiumGermanVoice) utterance.voice = premiumGermanVoice;
-    }
+    if (premiumVoice) utterance.voice = premiumVoice;
 
     utterance.onstart = () => setIsPlaying(true);
     utterance.onend = () => setIsPlaying(false);

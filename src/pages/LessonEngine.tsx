@@ -52,6 +52,7 @@ export const LessonEngine: React.FC<LessonEngineProps> = ({ questId, mode, exerc
         .replace(/\[.*?\]/g, '')
         .replace(/—/g, '')
         .replace('Translate:', '')
+        .replace(/_{2,}/g, '...')
         .trim();
 
       const utterance = new SpeechSynthesisUtterance(cleanPromptText);
