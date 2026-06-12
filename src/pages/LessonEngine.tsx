@@ -47,26 +47,35 @@ export const LessonEngine: React.FC<LessonEngineProps> = ({ questId, mode, exerc
       // 1. Cancel any active speech queues
       window.speechSynthesis.cancel();
 
-      // 2. Clean the metadata tags out of the question text
-      const cleanPromptText = currentExercise.question_text
-        .replace(/\[.*?\]/g, '')
-        .replace(/—/g, '')
-        .replace('Translate:', '')
-        .replace(/_{2,}/g, '...')
+      let cleanPromptText = '';
+      
+      // Extract string token entries bounded inside quotation flags
+      const quoteMatch = currentExercise.question_text.match(/"([^"]*)"/);
+      if (quoteMatch && quoteMatch[1]) {
+        cleanPromptText = quoteMatch[1];
+      } else {
+        cleanPromptText = currentExercise.question_text
+          .replace(/\[.*?\]/g, '')
+          .replace(/—/g, '')
+          .replace('Translate:', '')
+          .replace(/Grammar Fill-In.*?:\s*/i, '');
+      }
+
+      // Clean out placeholders and bracket hints completely
+      cleanPromptText = cleanPromptText
+        .replace(/_{1,}/g, '...')
+        .replace(/\(.*?\)/g, '')
         .trim();
 
       const utterance = new SpeechSynthesisUtterance(cleanPromptText);
 
-      const lowerText = currentExercise.question_text.toLowerCase();
-      const isEnglish =
-        lowerText.includes('translate') ||
-        lowerText.includes('book the') ||
-        lowerText.includes('i eat') ||
-        lowerText.includes('the mother');
-
-      const targetLang = isEnglish ? 'en-US' : 'de-DE';
+      // Handle conditional language mapping structures safely
+      const lowerRaw = currentExercise.question_text.toLowerCase();
+      const isEnglishFrame = lowerRaw.includes('grammar') || lowerRaw.includes('translate');
+      
+      const targetLang = isEnglishFrame ? 'en-US' : 'de-DE';
       utterance.lang = targetLang;
-      utterance.rate = isEnglish ? 0.75 : 0.85;
+      utterance.rate = isEnglishFrame ? 0.75 : 0.85;
 
       const voices = window.speechSynthesis.getVoices();
       const premiumVoice = voices.find(v =>

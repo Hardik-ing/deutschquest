@@ -3,59 +3,52 @@ import { Volume2 } from 'lucide-react';
 
 interface AudioButtonProps {
   text: string;
-  lang: 'de-DE' | 'en-US';
-  langCode?: 'de-DE' | 'en-US';
-  audioUrl?: string | null;
 }
 
-export const AudioButton: React.FC<AudioButtonProps> = ({ text, langCode, lang, audioUrl }) => {
+export const AudioButton: React.FC<AudioButtonProps> = ({ text }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const resolvedLangCode = lang ?? langCode;
-
-  const playNativeAudio = () => {
-    if (!audioUrl) return false;
-
-    const audio = new Audio(audioUrl);
-    audio.onplay = () => setIsPlaying(true);
-    audio.onended = () => setIsPlaying(false);
-    audio.onerror = () => setIsPlaying(false);
-    audio.play().catch(error => {
-      setIsPlaying(false);
-      console.log('Native audio playback blocked:', error);
-    });
-    return true;
-  };
 
   const handleSpeak = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!text) return;
-    if (playNativeAudio()) return;
-
-    if (!('speechSynthesis' in window)) {
-      alert('Text-to-speech engine is not supported in this browser version.');
-      return;
-    }
 
     window.speechSynthesis.cancel();
 
-    const cleanPromptText = text
-      .replace(/\[.*?\]/g, '')
-      .replace(/—/g, '')
-      .replace('Translate:', '')
-      .replace(/_{2,}/g, '...')
+    let cleanPromptText = '';
+
+    // 🟢 ACCENT FIX: Extract ONLY the quote contents so it stops trying to read layout templates
+    const quoteMatch = text.match(/"([^"]*)"/);
+    if (quoteMatch && quoteMatch[1]) {
+      cleanPromptText = quoteMatch[1];
+    } else {
+      // Fallback if no quotes exist
+      cleanPromptText = text
+        .replace(/\[.*?\]/g, '')
+        .replace(/—/g, '')
+        .replace('Translate:', '')
+        .replace(/Grammar Fill-In.*?:\s*/i, '');
+    }
+
+    // 🟢 UNDERSCORE FIX: Aggressively convert any series of underscores or dashes into a short silent breath pause
+    cleanPromptText = cleanPromptText
+      .replace(/_{1,}/g, '...') // Catches any number of consecutive underscores
+      .replace(/\(.*?\)/g, '')   // Removals translation hints like (to see) so it stays silent
       .trim();
+
     const utterance = new SpeechSynthesisUtterance(cleanPromptText);
-    utterance.lang = resolvedLangCode;
-    utterance.rate = resolvedLangCode === 'en-US' ? 0.75 : 0.85;
+    
+    // Set language to English since the sentence frame is English structure
+    utterance.lang = 'en-US'; 
+    utterance.rate = 0.75; // Slower delivery for maximum academic focus
     utterance.pitch = 1.0;
 
+    // Find a premium native voice system
     const voices = window.speechSynthesis.getVoices();
-    const targetLang = resolvedLangCode === 'en-US' ? 'en-US' : 'de-DE';
-    const premiumVoice = voices.find(v =>
-      v.lang.startsWith(targetLang) && (v.name.includes('Google') || v.name.includes('Natural'))
-    ) || voices.find(v => v.lang.startsWith(targetLang));
-
-    if (premiumVoice) utterance.voice = premiumVoice;
+    const premiumEnglishVoice = voices.find(v => 
+      v.lang.startsWith('en-US') && (v.name.includes('Google') || v.name.includes('Natural'))
+    ) || voices.find(v => v.lang.startsWith('en-US'));
+    
+    if (premiumEnglishVoice) utterance.voice = premiumEnglishVoice;
 
     utterance.onstart = () => setIsPlaying(true);
     utterance.onend = () => setIsPlaying(false);
@@ -70,10 +63,9 @@ export const AudioButton: React.FC<AudioButtonProps> = ({ text, langCode, lang, 
       onClick={handleSpeak}
       className={`p-3 rounded-full transition-all ${
         isPlaying
-          ? 'bg-indigo-600 text-white scale-95 shadow-inner'
-          : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-md hover:scale-105'
+          ? 'bg-indigo-600 text-white scale-95'
+          : 'bg-emerald-500 hover:bg-emerald-400 text-white shadow-md'
       }`}
-      title={audioUrl ? 'Play native German recording' : 'Listen to question prompt'}
     >
       <Volume2 className="w-5 h-5" />
     </button>
