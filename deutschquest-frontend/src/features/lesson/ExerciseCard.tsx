@@ -146,10 +146,10 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
         )}
       </AnimatePresence>
 
-      {/* 🛑 CRITICAL CONDITIONAL BUTTON RENDERING SECTION */}
-      <div className="w-full pt-2">
+      {/*  ANTI-CHEAT FORCE FOOTER SWITCH */}
+      <div className="w-full pt-4">
         {!hasChecked ? (
-          // State A: User hasn't clicked verification yet
+          /* State 1: Before verifying selection */
           <button
             type="button"
             disabled={!selectedOption && exercise.type !== 'speaking'}
@@ -159,7 +159,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
             Verify Selection
           </button>
         ) : isCorrect ? (
-          // State B: Answer verified and CORRECT -> Keep Advance Challenge button
+          /* State 2: Verified AND 100% Correct -> Show Advance Challenge */
           <button
             type="button"
             onClick={() => onNext(isCorrect)}
@@ -168,13 +168,13 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
             Advance Challenge ➔
           </button>
         ) : (
-          // State C: Answer verified and WRONG -> Completely swap to Retry Challenge button!
+          /* State 3: Verified AND Incorrect -> STRICTLY show Retry Challenge immediately */
           <button
             type="button"
             onClick={handleRetry}
             className="w-full bg-amber-600 hover:bg-amber-500 py-4 text-white font-black rounded-xl shadow-lg transition-all text-sm uppercase tracking-wider flex items-center justify-center gap-2"
           >
-            <RefreshCw className="w-4 h-4 text-white animate-spin-slow" />
+            <RefreshCw className="w-4 h-4 text-white animate-spin" />
             Retry Challenge
           </button>
         )}

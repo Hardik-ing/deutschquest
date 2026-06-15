@@ -86,12 +86,6 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
     }
   };
 
-  const determineLanguage = (text: string): 'en-US' | 'de-DE' => {
-    const lowerText = text.toLowerCase();
-    if (lowerText.includes('translate') || lowerText.includes('book the')) return 'en-US';
-    return 'de-DE';
-  };
-
   const handleCheck = () => {
     if (exercise.type !== 'speaking' && !selectedOption) return;
 
@@ -117,8 +111,6 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, soundEnabl
         {exercise.question_text && (
           <AudioButton
             text={exercise.question_text}
-            lang={determineLanguage(exercise.question_text)}
-            audioUrl={nativeAudioUrl}
           />
         )}
       </div>
