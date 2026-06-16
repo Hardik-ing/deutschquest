@@ -2,13 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply bg-quest-alabaster text-stone-900 dark:bg-quest-abyss dark:text-quest-alabaster transition-colors duration-300 font-sans antialiased;
-  }
-}
-
-/* Premium smooth layout transitions */
-.premium-transition {
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+body {
+  @apply bg-premiumWhite text-premiumNavy antialiased;
 }

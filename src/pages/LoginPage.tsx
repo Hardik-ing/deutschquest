@@ -1,6 +1,4 @@
 import { motion } from 'framer-motion';
-// @ts-ignore
-import { supabase } from '../config/supabaseClient';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
