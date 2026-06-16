@@ -20,7 +20,8 @@
     "isolatedModules": true,
     "noEmitOnError": false,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",            // 🟢 Forces TypeScript to recognize HTML tags in React
+    "jsxImportSource": "react"     // 🟢 Tells it where to look for the JSX interface mapping
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
