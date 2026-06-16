@@ -1,5 +1,17 @@
 {
   "version": 2,
-  "buildCommand": "cd deutschquest-frontend && npm install && npm run build",
-  "outputDirectory": "deutschquest-frontend/dist"
+  "public": true,
+  "builds": [
+    {
+      "src": "deutschquest-frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/deutschquest-frontend/$1"
+    }
+  ]
 }
