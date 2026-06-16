@@ -48,11 +48,11 @@ export function LessonPage({ progress, updateProgress, awardToast }: LessonPageP
       <Card className="rounded-[36px] p-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-emerald-300">Lesson</p>
+            <p className="text-sm uppercase tracking-[0.3em] text-premiumCrimson font-bold">Lesson</p>
             <h2 className="text-3xl font-semibold text-white">{currentLesson.title}</h2>
             <p className="mt-2 text-slate-400">{currentLesson.description}</p>
           </div>
-          <div className="rounded-3xl bg-slate-900/80 p-5 text-slate-200">
+          <div className="rounded-3xl bg-premiumNavy p-5 text-slate-200 shadow-lg">
             <p className="text-sm uppercase tracking-[0.2em] text-slate-400">Mastery</p>
             <div className="mt-3 flex gap-2 text-amber-300">
               {masteryStars.map((active, idx) => (
@@ -70,13 +70,13 @@ export function LessonPage({ progress, updateProgress, awardToast }: LessonPageP
               <p className="text-sm uppercase tracking-[0.3em] text-slate-400">Words to practice</p>
               <div className="grid gap-4 sm:grid-cols-2">
                 {currentLesson.words.map(word => (
-                  <div key={word.word} className="rounded-3xl border border-white/10 bg-slate-950/80 p-4">
+                  <div key={word.word} className="rounded-3xl border border-white/10 bg-black/40 p-4">
                     <div className="flex items-center justify-between gap-4">
                       <div>
                         <p className="text-xl font-semibold text-white">{word.word}</p>
                         <p className="text-sm text-slate-400">{word.translation}</p>
                       </div>
-                      <button type="button" onClick={() => speak(word.word)} className="rounded-full bg-sky-500/20 px-3 py-2 text-sm text-sky-300">Play</button>
+                      <button type="button" onClick={() => speak(word.word)} className="rounded-full bg-premiumCrimson/20 px-3 py-2 text-sm text-premiumCrimson font-bold">Play</button>
                     </div>
                     <p className="mt-3 text-sm text-slate-500">{word.example}</p>
                     <p className="mt-2 text-xs uppercase tracking-[0.2em] text-slate-500">Pronunciation: {word.pronunciation}</p>
@@ -85,7 +85,7 @@ export function LessonPage({ progress, updateProgress, awardToast }: LessonPageP
               </div>
             </div>
 
-            <div className="rounded-[32px] border border-white/10 bg-slate-900/80 p-6">
+            <div className="rounded-[32px] border border-white/10 bg-premiumNavy/50 p-6">
               <div className="flex items-center justify-between">
                 <p className="text-sm uppercase tracking-[0.3em] text-slate-400">Exercise</p>
                 <Badge>{exercise.type}</Badge>
@@ -107,7 +107,7 @@ export function LessonPage({ progress, updateProgress, awardToast }: LessonPageP
                     key={option}
                     type="button"
                     onClick={() => setSelected(option)}
-                    className={`w-full rounded-3xl border px-4 py-3 text-left text-sm transition ${selected === option ? 'border-sky-400 bg-sky-500/10 text-white' : 'border-slate-700 bg-slate-950/70 text-slate-200 hover:border-slate-500'}`}
+                    className={`w-full rounded-3xl border px-4 py-3 text-left text-sm transition ${selected === option ? 'border-premiumCrimson bg-premiumCrimson/10 text-white' : 'border-slate-700 bg-black/50 text-slate-200 hover:border-slate-500'}`}
                   >
                     {option}
                   </button>
@@ -127,12 +127,12 @@ export function LessonPage({ progress, updateProgress, awardToast }: LessonPageP
         <Card className="rounded-[36px] p-8">
           <div className="space-y-6">
             <div>
-              <p className="text-sm uppercase tracking-[0.3em] text-emerald-300">Lesson summary</p>
+              <p className="text-sm uppercase tracking-[0.3em] text-premiumCrimson font-bold">Lesson summary</p>
               <h3 className="mt-2 text-2xl font-semibold text-white">Review & Replay</h3>
             </div>
             <div className="grid gap-4">
               {['Replay Quest', 'Practice Again', 'Challenge Mode', 'Review Mistakes'].map(label => (
-                <button key={label} type="button" className="rounded-3xl border border-white/10 bg-slate-900/80 px-4 py-4 text-left text-sm text-slate-200 transition hover:border-sky-400/30 hover:bg-slate-800/90">
+                <button key={label} type="button" className="rounded-3xl border border-white/10 bg-premiumNavy/40 px-4 py-4 text-left text-sm text-slate-200 transition hover:border-premiumCrimson/50 hover:bg-premiumNavy/60">
                   <p className="font-semibold text-white">{label}</p>
                   <p className="mt-1 text-slate-400 text-sm">Verbessere deine Mastery mit wiederholten Übungen.</p>
                 </button>

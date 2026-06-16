@@ -19,12 +19,12 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="mx-auto max-w-4xl rounded-[40px] border border-white/10 bg-slate-950/80 p-8 shadow-glow backdrop-blur-xl"
+      className="mx-auto max-w-4xl rounded-[40px] border border-white/10 bg-black/80 p-8 shadow-2xl backdrop-blur-xl"
     >
       <div className="grid gap-6 lg:grid-cols-[1.2fr,1fr]">
-        <div className="space-y-6 rounded-[32px] bg-slate-900/80 p-8 shadow-xl shadow-slate-950/30">
+        <div className="space-y-6 rounded-[32px] bg-premiumNavy/90 p-8 shadow-xl shadow-black/50">
           <div className="space-y-2">
-            <p className="text-sm uppercase tracking-[0.3em] text-sky-300">Willkommen zurück</p>
+            <p className="text-sm uppercase tracking-[0.3em] text-premiumCrimson font-bold">Willkommen zurück</p>
             <h2 className="text-3xl font-semibold text-white">Logge dich ein und setze dein Abenteuer fort.</h2>
             <p className="text-slate-400">Lerne Deutsch mit täglichen Quests, XP, Belohnungen und echten Fortschritten.</p>
           </div>
@@ -38,7 +38,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               <Input value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" type="password" />
             </label>
             <label className="inline-flex items-center gap-2 text-sm text-slate-300">
-              <input type="checkbox" className="h-4 w-4 rounded border-slate-700 bg-slate-900 text-sky-400" />
+              <input type="checkbox" className="h-4 w-4 rounded border-slate-700 bg-black text-premiumCrimson" />
               Remember Me
             </label>
             <Button variant="primary" onClick={() => onLogin({ ...mockUser, email: email || mockUser.email })}>Login</Button>
@@ -48,8 +48,8 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             </div>
           </div>
         </div>
-        <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 p-8 text-slate-200 shadow-xl shadow-slate-950/40">
-          <div className="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-500" />
+        <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-premiumNavy via-black to-premiumNavy p-8 text-slate-200 shadow-xl shadow-black/40">
+          <div className="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-red-600 via-premiumCrimson to-red-900" />
           <div className="space-y-6">
             <div className="space-y-3">
               <h3 className="text-2xl font-semibold">DeutschQuest startet hier</h3>
@@ -57,13 +57,13 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             </div>
             <div className="grid gap-4 rounded-3xl bg-slate-950/70 p-4">
               {['XP-System', 'Tägliche Quests', 'Sprachübungen', 'AI Tutor'].map(item => (
-                <div key={item} className="flex items-center justify-between rounded-3xl border border-white/10 bg-white/5 px-4 py-3">
+                <div key={item} className="flex items-center justify-between rounded-3xl border border-white/10 bg-black/40 px-4 py-3">
                   <span>{item}</span>
-                  <span className="text-xs uppercase tracking-[0.24em] text-sky-300">Neu</span>
+                  <span className="text-xs uppercase tracking-[0.24em] text-premiumCrimson font-bold">Neu</span>
                 </div>
               ))}
             </div>
-            <p className="text-sm text-slate-500">Noch kein Konto? <Link to="/signup" className="text-sky-300 underline">Erstelle eines</Link>.</p>
+            <p className="text-sm text-slate-500">Noch kein Konto? <Link to="/signup" className="text-premiumCrimson font-bold underline">Erstelle eines</Link>.</p>
           </div>
         </div>
       </div>

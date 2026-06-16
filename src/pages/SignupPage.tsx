@@ -28,12 +28,12 @@ export function SignupPage({ onSignup }: SignupPageProps) {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="mx-auto max-w-5xl rounded-[40px] border border-white/10 bg-slate-950/80 p-8 shadow-glow backdrop-blur-xl"
+      className="mx-auto max-w-5xl rounded-[40px] border border-white/10 bg-black/80 p-8 shadow-2xl backdrop-blur-xl"
     >
       <div className="grid gap-6 lg:grid-cols-[1fr,0.9fr]">
-        <div className="rounded-[32px] bg-slate-900/80 p-8 shadow-xl shadow-slate-950/30">
+        <div className="rounded-[32px] bg-premiumNavy/90 p-8 shadow-xl shadow-black/50">
           <div className="space-y-3">
-            <p className="text-sm uppercase tracking-[0.3em] text-sky-300">Starte deine Reise</p>
+            <p className="text-sm uppercase tracking-[0.3em] text-premiumCrimson font-bold">Starte deine Reise</p>
             <h2 className="text-3xl font-semibold text-white">Erstelle dein Konto und erhalte tägliche Motivation.</h2>
             <p className="text-slate-400">Wähle deine Muttersprache, dein Lernziel und unlocke Quests für echtes Sprachwachstum.</p>
           </div>
@@ -57,13 +57,13 @@ export function SignupPage({ onSignup }: SignupPageProps) {
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="space-y-2 text-sm text-slate-200">
                 Native Language
-                <select className="w-full rounded-3xl border border-slate-700 bg-slate-900/90 px-4 py-3 text-slate-100" value={nativeLanguage} onChange={e => setNativeLanguage(e.target.value)}>
+                <select className="w-full rounded-3xl border border-slate-700 bg-black px-4 py-3 text-slate-100" value={nativeLanguage} onChange={e => setNativeLanguage(e.target.value)}>
                   {nativeLanguages.map(lang => <option key={lang} value={lang}>{lang}</option>)}
                 </select>
               </label>
               <label className="space-y-2 text-sm text-slate-200">
                 Learning Goal
-                <select className="w-full rounded-3xl border border-slate-700 bg-slate-900/90 px-4 py-3 text-slate-100" value={goal} onChange={e => setGoal(e.target.value)}>
+                <select className="w-full rounded-3xl border border-slate-700 bg-black px-4 py-3 text-slate-100" value={goal} onChange={e => setGoal(e.target.value)}>
                   {goals.map(goalOption => <option key={goalOption} value={goalOption}>{goalOption}</option>)}
                 </select>
               </label>
@@ -77,9 +77,9 @@ export function SignupPage({ onSignup }: SignupPageProps) {
             </div>
           </div>
         </div>
-        <div className="rounded-[32px] bg-gradient-to-br from-cyan-500/20 via-slate-950/80 to-slate-900/90 p-8 shadow-xl shadow-cyan-500/10">
+        <div className="rounded-[32px] bg-gradient-to-br from-premiumCrimson/20 via-black to-premiumNavy/90 p-8 shadow-xl shadow-premiumCrimson/10">
           <div className="space-y-5">
-            <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-6">
+            <div className="rounded-3xl border border-white/10 bg-black/60 p-6">
               <h3 className="text-xl font-semibold text-white">Props deines Abenteuers</h3>
               <ul className="mt-4 space-y-3 text-slate-300">
                 <li>• Tägliche XP-Belohnungen</li>
@@ -88,7 +88,7 @@ export function SignupPage({ onSignup }: SignupPageProps) {
                 <li>• Echtzeit Motivation vom Mentor</li>
               </ul>
             </div>
-            <p className="text-sm text-slate-400">Bereits ein Konto? <Link to="/login" className="text-sky-300 underline">Hier anmelden</Link>.</p>
+            <p className="text-sm text-slate-400">Bereits ein Konto? <Link to="/login" className="text-premiumCrimson font-bold underline">Hier anmelden</Link>.</p>
           </div>
         </div>
       </div>
