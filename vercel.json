@@ -3,7 +3,6 @@
   "buildCommand": "cd deutschquest-frontend && npm install && npm run build",
   "outputDirectory": "deutschquest-frontend/dist",
   "rewrites": [
-    { "source": "/assets/(.*)", "destination": "/deutschquest-frontend/dist/assets/$1" },
-    { "source": "/(.*)", "destination": "/deutschquest-frontend/dist/index.html" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
