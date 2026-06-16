@@ -1,8 +1,5 @@
 {
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+  "version": 2,
+  "buildCommand": "cd deutschquest-frontend && npm install && npm run build",
+  "outputDirectory": "deutschquest-frontend/dist"
 }

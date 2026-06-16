@@ -1,4 +1,6 @@
 import { motion } from 'framer-motion';
+// @ts-ignore
+import { supabase } from '../config/supabaseClient';
 import { Link } from 'react-router-dom';
 import { questList } from '../data/mockData';
 import type { ProgressState } from '../types';

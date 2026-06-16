@@ -1,12 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Fully guarded strings ensure the browser will never throw an "undefined" reference error
-const supabaseUrl = typeof window !== 'undefined' && import.meta.env?.VITE_SUPABASE_URL 
-  ? import.meta.env.VITE_SUPABASE_URL 
-  : 'https://placeholder-your-project.supabase.co';
+// 🟢 Force TypeScript to recognize the types as strings explicitly
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
-const supabaseAnonKey = typeof window !== 'undefined' && import.meta.env?.VITE_SUPABASE_ANON_KEY 
-  ? import.meta.env.VITE_SUPABASE_ANON_KEY 
-  : 'placeholder-anon-key';
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase Environment Variables');
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);

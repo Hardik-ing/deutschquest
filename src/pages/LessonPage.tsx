@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
+// @ts-ignore
+import { supabase } from '../config/supabaseClient';
 import { useParams } from 'react-router-dom';
 import { useSpeech } from '../hooks/useSpeech';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';

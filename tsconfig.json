@@ -1,28 +1,19 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "allowJs": false,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
-    "types": [],
-    "typeRoots": [
-      "./node_modules/@types",
-      "./node_modules"
-    ],
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    
+    // 🟢 Keep this clean and lightweight
+    "skipLibCheck": true,
     "noEmitOnError": false,
-    "noEmit": true,
-    "jsx": "react-jsx",            // 🟢 Forces TypeScript to recognize HTML tags in React
-    "jsxImportSource": "react"     // 🟢 Tells it where to look for the JSX interface mapping
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src"]
 }

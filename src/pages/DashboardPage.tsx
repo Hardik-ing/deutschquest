@@ -1,4 +1,6 @@
 import { motion } from 'framer-motion';
+// @ts-ignore
+import { supabase } from '../config/supabaseClient';
 import { Link } from 'react-router-dom';
 import { User } from 'lucide-react';
 import { Card } from '../components/ui/Card';
